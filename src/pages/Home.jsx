@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
+import { useDebate } from "../context/DebateContext";
 import Navbar from "../components/Navbar";
 import InputForm from "../components/InputForm";
 
 export default function Home() {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const debate = useDebate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -43,9 +45,11 @@ export default function Home() {
 
       const backendData = await response.json();
       
+      // Reset any previous debate state for fresh results
+      debate.reset();
+      
       // Navigate to results page with fresh data
       navigate("/results", { state: { results: backendData.results, formData } });
-      
 
     } catch (err) {
       console.error("Backend Error:", err);

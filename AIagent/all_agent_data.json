@@ -6,32 +6,32 @@
   "ML_Engine_Data": [
     {
       "rank": 1,
-      "crop": "Muskmelon",
-      "suitability": 34,
+      "crop": "Mango",
+      "suitability": 21,
       "confidence": 0.9
     },
     {
       "rank": 2,
-      "crop": "Kidneybeans",
-      "suitability": 16,
+      "crop": "Grapes",
+      "suitability": 19,
       "confidence": 0.9
     },
     {
       "rank": 3,
       "crop": "Chickpea",
-      "suitability": 10,
+      "suitability": 15,
       "confidence": 0.9
     },
     {
       "rank": 4,
-      "crop": "Mothbeans",
-      "suitability": 7,
+      "crop": "Papaya",
+      "suitability": 12,
       "confidence": 0.9
     },
     {
       "rank": 5,
-      "crop": "Maize",
-      "suitability": 6,
+      "crop": "Apple",
+      "suitability": 11,
       "confidence": 0.9
     }
   ],
@@ -42,7 +42,7 @@
     "macronutrients": {
       "N": "Medium",
       "P": "Medium",
-      "K": "Medium"
+      "K": "High"
     },
     "micronutrients": {
       "Zinc": "Deficient",

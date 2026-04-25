@@ -5,7 +5,7 @@ import {
   getSeasonFromMonth,
 } from "../data/mockData";
 import { parseSoilHealthCardPDF } from "../utils/pdfParser";
-import { fetchLiveWeather } from "../utils/weatherService";
+import { fetchLiveWeather, fetchWeatherByCoords, reverseGeocode } from "../utils/weatherService";
 
 const LOCATIONS = [
   "Nashik, Maharashtra",
@@ -95,26 +95,57 @@ export default function InputForm({ t, onSubmit }) {
     }
   }, [soilSource, location]);
 
-  // Auto-detect location via browser geolocation
+  // Auto-detect location via browser geolocation + reverse geocoding
   const handleDetectLocation = () => {
     if (!navigator.geolocation) return;
     setDetectingLocation(true);
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const simulatedCity = "Nashik, Maharashtra";
-        setLocation(simulatedCity);
-        setLocationAuto(true);
-        updateLocationData(simulatedCity);
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          // Reverse geocode to get city name from GPS coordinates
+          const cityName = await reverseGeocode(latitude, longitude);
+          const detectedLocation = cityName || `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
+          setLocation(detectedLocation);
+          setLocationAuto(true);
+
+          // Fetch weather using exact coordinates for accuracy
+          setWeatherLoading(true);
+          const liveWeather = await fetchWeatherByCoords(latitude, longitude);
+          if (liveWeather) {
+            setWeather(liveWeather);
+            setSeason(liveWeather.season || getSeasonFromMonth());
+          } else {
+            // Fallback to name-based weather
+            const w = getWeatherForLocation(detectedLocation);
+            setWeather(w);
+            setSeason(w.season || getSeasonFromMonth());
+          }
+          setWeatherLoading(false);
+
+          // Load soil data for detected location
+          if (soilSource === "auto") {
+            const s = getSoilForLocation(detectedLocation);
+            setSoil(s);
+          }
+        } catch (err) {
+          console.error("Location detection error:", err);
+          const fallback = "Pune, Maharashtra";
+          setLocation(fallback);
+          setLocationAuto(true);
+          updateLocationData(fallback);
+        }
         setDetectingLocation(false);
       },
-      () => {
+      (err) => {
+        console.error("Geolocation error:", err);
         const fallback = "Pune, Maharashtra";
         setLocation(fallback);
         setLocationAuto(true);
         updateLocationData(fallback);
         setDetectingLocation(false);
       },
-      { timeout: 5000 }
+      { timeout: 10000, enableHighAccuracy: true }
     );
   };
 

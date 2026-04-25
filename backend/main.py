@@ -85,6 +85,79 @@ async def run_debate():
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
+
+@app.post("/final-output")
+async def generate_final_output(payload: dict):
+    """Use Ollama to generate the final structured advisory from agent debate results."""
+    from ollama import AsyncClient
+    
+    top3 = payload.get("top3", [])
+    agent_insights = payload.get("agent_insights", {})
+    
+    prompt = f"""You are an agricultural intelligence system. Based on the AI agent debate results below, generate a FINAL ADVISORY REPORT for the farmer.
+
+## Top 3 Recommended Crops (from ML Model)
+{json.dumps(top3, indent=2)}
+
+## Agent Debate Insights
+- Farmer (Soil & Weather Expert): {json.dumps(agent_insights.get('Farmer', []), indent=2)}
+- Trader (Market Expert): {json.dumps(agent_insights.get('Trader', []), indent=2)}  
+- Analyst (Policy Expert): {json.dumps(agent_insights.get('Analyst', []), indent=2)}
+
+## Your Task
+Generate a final advisory in STRICT JSON format with these sections:
+
+{{
+  "explanation": "<2-3 sentences explaining why the #1 crop is the best choice, referencing soil, market, and policy factors>",
+  "profit_estimation": [
+    {{
+      "crop_name": "<name>",
+      "estimated_profit_per_acre_inr": <number>,
+      "roi_percent": <number>,
+      "reasoning": "<1 sentence why>"
+    }}
+  ],
+  "actionable_advice": {{
+    "fertilizer": "<specific fertilizer recommendation>",
+    "sowing_timing": "<when to sow>",
+    "irrigation": "<irrigation advice>",
+    "market_timing": "<when to sell for best price>"
+  }},
+  "carbon_credit": [
+    {{
+      "crop_name": "<name>",
+      "score_out_of_10": <number>,
+      "note": "<1 sentence>"
+    }}
+  ]
+}}
+
+CRITICAL: Respond ONLY with the JSON object. No markdown, no explanation outside JSON.
+"""
+    
+    try:
+        client = AsyncClient()
+        response = await client.chat(
+            model="gemma3",
+            messages=[{"role": "user", "content": prompt}],
+            options={"temperature": 0.4},
+            format="json",
+        )
+        
+        raw = response["message"]["content"].strip()
+        # Clean markdown fences
+        if raw.startswith("```json"):
+            raw = raw.replace("```json", "", 1)
+        if raw.startswith("```"):
+            raw = raw.replace("```", "", 1)
+        if raw.endswith("```"):
+            raw = raw[::-1].replace("```", "", 1)[::-1]
+        
+        result = json.loads(raw.strip())
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 def update_agent_data(formatted_results, input_params):
     """Update AIagent/all_agent_data.json with fresh results."""
     data_path = root_path / "AIagent" / "all_agent_data.json"
