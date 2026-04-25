@@ -271,10 +271,10 @@ export default function InputForm({ t, onSubmit }) {
           )}
 
           {/* ── Section 3: Land Size & Water ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:items-end">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.landSize}</label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 h-[42px]">
                 <input
                   type="number"
                   min="0"
@@ -282,13 +282,13 @@ export default function InputForm({ t, onSubmit }) {
                   value={landSize}
                   onChange={(e) => setLandSize(e.target.value)}
                   placeholder={t.landSizePlaceholder}
-                  className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
+                  className="flex-1 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
                   required
                 />
                 <select
                   value={landUnit}
                   onChange={(e) => setLandUnit(e.target.value)}
-                  className="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-green-400 cursor-pointer"
+                  className="px-1 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-green-400 cursor-pointer"
                 >
                   <option value="acres">{t.acres}</option>
                   <option value="hectares">{t.hectares}</option>
@@ -296,11 +296,12 @@ export default function InputForm({ t, onSubmit }) {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.waterAvailability}</label>
+              <label style={{ marginLeft: "15px" }} className="block text-sm font-medium text-gray-700 mb-1">{t.waterAvailability}</label>
               <select
                 value={water}
                 onChange={(e) => setWater(e.target.value)}
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition cursor-pointer"
+                style={{ marginLeft: "15px" }}
+                className="w-full h-[42px] px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition cursor-pointer"
               >
                 <option value="low">{t.low}</option>
                 <option value="medium">{t.medium}</option>
@@ -326,22 +327,20 @@ export default function InputForm({ t, onSubmit }) {
               <button
                 type="button"
                 onClick={() => setSoilSource("auto")}
-                className={`flex-1 py-2 rounded-xl text-sm font-semibold border-2 transition-all cursor-pointer ${
-                  soilSource === "auto"
-                    ? "border-amber-400 bg-amber-100 text-amber-800"
-                    : "border-gray-200 bg-white text-gray-500 hover:border-gray-300"
-                }`}
+                className={`flex-1 py-2 rounded-xl text-sm font-semibold border-2 transition-all cursor-pointer ${soilSource === "auto"
+                  ? "border-amber-400 bg-amber-100 text-amber-800"
+                  : "border-gray-200 bg-white text-gray-500 hover:border-gray-300"
+                  }`}
               >
                 {t.soilAutoLabel || "Use Simulated Data"}
               </button>
               <button
                 type="button"
                 onClick={() => setSoilSource("pdf")}
-                className={`flex-1 py-2 rounded-xl text-sm font-semibold border-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                  soilSource === "pdf"
-                    ? "border-amber-400 bg-amber-100 text-amber-800"
-                    : "border-gray-200 bg-white text-gray-500 hover:border-gray-300"
-                }`}
+                className={`flex-1 py-2 rounded-xl text-sm font-semibold border-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 ${soilSource === "pdf"
+                  ? "border-amber-400 bg-amber-100 text-amber-800"
+                  : "border-gray-200 bg-white text-gray-500 hover:border-gray-300"
+                  }`}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -468,8 +467,8 @@ export default function InputForm({ t, onSubmit }) {
             )}
           </button>
         </form>
-      </div>
-    </section>
+      </div >
+    </section >
   );
 }
 

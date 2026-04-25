@@ -69,3 +69,72 @@ input[type="range"]::-moz-range-thumb {
 .fade-in-up {
   animation: fadeInUp 0.5s ease-out forwards;
 }
+
+/* ============================================
+   Google Translate Widget – Style Overrides
+   ============================================ */
+
+/* Hide the top translation banner / frame injected by Google */
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+/* Prevent Google from pushing body down with top padding */
+body {
+  top: 0 !important;
+}
+
+/* Hide "Powered by Google" text & logo */
+.goog-te-gadget {
+  color: transparent !important;
+}
+.goog-te-gadget > span {
+  display: none !important;
+}
+.goog-te-gadget .goog-te-combo {
+  color: #374151 !important;
+}
+
+/* ---- Style the dropdown select ---- */
+.goog-te-combo {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+  border: 1.5px solid #bbf7d0;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 32px;
+}
+
+.goog-te-combo:hover {
+  border-color: #4ade80;
+}
+
+.goog-te-combo:focus {
+  border-color: #22c55e;
+}
+
+/* Style the translate container wrapper */
+.google-translate-container {
+  display: inline-block;
+}
+
+/* Prevent translate bar from causing layout shift */
+.skiptranslate {
+  display: none !important;
+}
+
+/* But keep the inline widget visible */
+.google-translate-container .skiptranslate {
+  display: block !important;
+}
+
+body > .skiptranslate {
+  display: none !important;
+}
