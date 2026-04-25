@@ -167,8 +167,7 @@ export default function InputForm({ t, onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    onSubmit({
+    await onSubmit({
       location,
       season,
       water,
