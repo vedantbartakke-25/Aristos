@@ -207,41 +207,10 @@ Example response:
 
 ## Current Best Model
 
-The current trained model selected Random Forest as the best model.
-
 Latest metrics:
 
 - Accuracy: `99.32%`
 - Macro F1: `99.32%`
 - Top-5 Accuracy: `100%`
 
-## Hackathon Flow
 
-Recommended final system flow:
-
-```text
-User Login
-   |
-   v
-Farmer Input Form + Live Location
-   |
-   v
-OpenWeather API + Soil Inputs + Market Dataset
-   |
-   v
-ML Crop Recommendation Model
-   |
-   v
-Top 5 Crop Prediction
-   |
-   v
-3 AI Agents
-   |
-   v
-Final Top 3 Crops
-   |
-   v
-Explanation + Profit + Risk Score
-```
-
-This folder currently implements only the ML Crop Recommendation Model step.
