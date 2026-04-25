@@ -1,0 +1,71 @@
+{
+  "features": [
+    "nitrogen",
+    "phosphorus",
+    "potassium",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall",
+    "soil_type",
+    "water_availability",
+    "season"
+  ],
+  "numeric_features": [
+    "nitrogen",
+    "phosphorus",
+    "potassium",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall"
+  ],
+  "categorical_features": [
+    "soil_type",
+    "water_availability",
+    "season"
+  ],
+  "target_column": "crop",
+  "metrics": [
+    {
+      "model": "Decision Tree",
+      "accuracy": 0.9795,
+      "macro_f1": 0.9794,
+      "top_5_accuracy": 0.9818,
+      "cv_accuracy_mean": 0.9835,
+      "cv_accuracy_std": 0.0061,
+      "selection_score": 0.9805
+    },
+    {
+      "model": "Random Forest",
+      "accuracy": 0.9932,
+      "macro_f1": 0.9932,
+      "top_5_accuracy": 1.0,
+      "cv_accuracy_mean": 0.9938,
+      "cv_accuracy_std": 0.0045,
+      "selection_score": 0.9916
+    },
+    {
+      "model": "Logistic Regression",
+      "accuracy": 0.9727,
+      "macro_f1": 0.9725,
+      "top_5_accuracy": 1.0,
+      "cv_accuracy_mean": 0.9676,
+      "cv_accuracy_std": 0.0064,
+      "selection_score": 0.9644
+    },
+    {
+      "model": "XGBoost",
+      "accuracy": 0.9886,
+      "macro_f1": 0.9885,
+      "top_5_accuracy": 1.0,
+      "cv_accuracy_mean": 0.9926,
+      "cv_accuracy_std": 0.0023,
+      "selection_score": 0.9915
+    }
+  ],
+  "best_model": "Random Forest",
+  "dataset_path": "C:\\Users\\parni\\Desktop\\BfB\\dataset\\crop_recommendation_dataset.xlsx",
+  "trained_at": "2026-04-25T06:43:29.932690+00:00",
+  "note": "The supplied crop dataset has no soil_type, water_availability, or season columns. The pipeline accepts these fields for API compatibility; they will start influencing predictions when included in the training data."
+}
