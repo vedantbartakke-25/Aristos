@@ -1,18 +1,12 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import InputForm from "../components/InputForm";
-import MLResults from "../components/MLResults";
-import AgentPanel from "../components/AgentPanel";
-import FinalOutput from "../components/FinalOutput";
-import RejectionPanel from "../components/RejectionPanel";
-import SMSButton from "../components/SMSButton";
-import { generateMockResults } from "../data/mockData";
 
 export default function Home() {
   const { t } = useLanguage();
-  const [results, setResults] = useState(null);
-  const resultsRef = useRef(null);
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -49,24 +43,13 @@ export default function Home() {
 
       const backendData = await response.json();
       
-      // Get base mock data for other sections
-      const mockData = generateMockResults(formData);
+      // Navigate to results page with fresh data
+      navigate("/results", { state: { results: backendData.results, formData } });
       
-      // Merge backend ML results with mock data for other panels
-      setResults({
-        ...mockData,
-        mlResults: backendData.results
-      });
 
-      setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
     } catch (err) {
       console.error("Backend Error:", err);
-      setError("Could not connect to the backend ML model. Showing simulated results instead.");
-      // Fallback to mock data if backend fails
-      const data = generateMockResults(formData);
-      setResults(data);
+      setError("Could not connect to the backend ML model. Please ensure the server is running.");
     } finally {
       setIsLoading(false);
     }
@@ -97,16 +80,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Results Section */}
-        {results && (
-          <div ref={resultsRef} className="space-y-8">
-            <MLResults t={t} results={results.mlResults} />
-            <AgentPanel t={t} agents={results.agents} />
-            <FinalOutput t={t} recommendation={results.recommendation} />
-            <RejectionPanel t={t} rejectedCrops={results.rejectedCrops} />
-            <SMSButton t={t} />
-          </div>
-        )}
 
         {/* Footer */}
         <footer className="text-center py-6 text-xs text-gray-400">

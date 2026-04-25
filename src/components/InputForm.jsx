@@ -5,6 +5,7 @@ import {
   getSeasonFromMonth,
 } from "../data/mockData";
 import { parseSoilHealthCardPDF } from "../utils/pdfParser";
+import { fetchLiveWeather } from "../utils/weatherService";
 
 const LOCATIONS = [
   "Nashik, Maharashtra",
@@ -30,6 +31,7 @@ export default function InputForm({ t, onSubmit }) {
   const [soil, setSoil] = useState(null);
   const [season, setSeason] = useState(getSeasonFromMonth());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [weatherLoading, setWeatherLoading] = useState(false);
 
   // Soil source: "auto" (simulated) or "pdf" (uploaded)
   const [soilSource, setSoilSource] = useState("auto");
@@ -40,11 +42,30 @@ export default function InputForm({ t, onSubmit }) {
   const fileInputRef = useRef(null);
 
   // Update weather + soil when location changes
-  const updateLocationData = useCallback((loc) => {
+  const updateLocationData = useCallback(async (loc) => {
     if (loc && loc.trim().length > 2) {
-      const w = getWeatherForLocation(loc);
-      setWeather(w);
-      setSeason(w.season || getSeasonFromMonth());
+      setWeatherLoading(true);
+      try {
+        // Try fetching live weather
+        const liveWeather = await fetchLiveWeather(loc);
+        if (liveWeather) {
+          setWeather(liveWeather);
+          setSeason(liveWeather.season || getSeasonFromMonth());
+        } else {
+          // Fallback to mock weather
+          const w = getWeatherForLocation(loc);
+          setWeather(w);
+          setSeason(w.season || getSeasonFromMonth());
+        }
+      } catch (err) {
+        // Fallback to mock weather on error
+        const w = getWeatherForLocation(loc);
+        setWeather(w);
+        setSeason(w.season || getSeasonFromMonth());
+      } finally {
+        setWeatherLoading(false);
+      }
+
       // Only set auto soil if we're in auto mode
       if (soilSource === "auto") {
         const s = getSoilForLocation(loc);
@@ -252,7 +273,9 @@ export default function InputForm({ t, onSubmit }) {
                   </svg>
                   <span className="text-sm font-semibold text-gray-800">{t.weatherAndZone}</span>
                 </div>
-                <span className="text-xs text-blue-500 bg-blue-100 px-2 py-0.5 rounded-full font-medium">{t.autoFetchedNote}</span>
+                <span className="text-xs text-blue-500 bg-blue-100 px-2 py-0.5 rounded-full font-medium">
+                  {weatherLoading ? t.fetchingWeather || "Fetching live..." : (weather.isLive ? "Live from OpenWeather" : t.autoFetchedNote)}
+                </span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <WeatherCard label={t.temperature} value={`${weather.temperature} C`} />
